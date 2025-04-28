@@ -165,14 +165,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     tickets = TicketCreateSerializer(many=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Order
-        fields = ("tickets",)
+        fields = ("tickets", "user")
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")
-        order = Order.objects.create(user=self.context["request"].user)
+        order = Order.objects.create(**validated_data)
 
         for ticket_data in tickets_data:
             Ticket.objects.create(order=order, **ticket_data)

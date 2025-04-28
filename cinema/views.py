@@ -138,9 +138,6 @@ class OrderViewSet(viewsets.ModelViewSet):
             "tickets__movie_session__cinema_hall",
         )
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
     def get_serializer_class(self):
         if self.action == "create":
             return OrderCreateSerializer
